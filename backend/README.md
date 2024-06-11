@@ -1,3 +1,3 @@
-# FoodLogger
+# FoodLogger Back End
 
-This is a learning project using full stack typescript.
+This is the back end repo for the project utilizing TypeScript and Express
