@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --exec \"node --inspect --loader ts-node/esm\" src/index.ts"
+    "dev": "nodemon --exec \"node --inspect --loader ts-node/esm\" src/index.ts",
+    "db-generate": "drizzle-kit generate",
+    "db-migrate": "drizzle-kit migrate"
   },
   "author": "",
   "license": "ISC",
