@@ -5,6 +5,10 @@ const app = express();
 
 app.use(helmet());
 
+// TODO
+// set up logging with pino-http (recommended by pino for use with express)
+// however, haven't found examples of usage with esm import syntax
+
 // tested with CURL, if I don't specify content-type as json, seems
 // like CURL defaults to x-www-form-urlencoded content type for POST
 // need to also parse x-www-form-urlencoded request bodies? when would those get set?
