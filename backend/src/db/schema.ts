@@ -2,12 +2,7 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 // drizzle docs for using drizzle-kit to handle schema migrations
 // https://orm.drizzle.team/docs/migrations
-import {
-  sqliteTable,
-  text,
-  integer,
-  uniqueIndex,
-} from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
 export const users = sqliteTable(
   "users",
@@ -20,3 +15,9 @@ export const users = sqliteTable(
   //   usernameIdx: uniqueIndex("username_idx").on(users.username),
   // })
 );
+
+export const recipes = sqliteTable("recipes", {
+  id: integer("id").primaryKey(),
+  recipeName: text("recipe_name").notNull(),
+  userId: integer("user_id").references(() => users.id),
+});
