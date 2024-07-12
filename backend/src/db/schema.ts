@@ -16,8 +16,16 @@ export const users = sqliteTable(
   // })
 );
 
+export type User = typeof users.$inferSelect; // return type when queried
+export type InsertUser = typeof users.$inferInsert; // insert type
+
 export const recipes = sqliteTable("recipes", {
   id: integer("id").primaryKey(),
   recipeName: text("recipe_name").notNull(),
-  userId: integer("user_id").references(() => users.id),
+  userId: integer("user_id")
+    .references(() => users.id)
+    .notNull(),
 });
+
+export type Recipe = typeof recipes.$inferSelect;
+export type InsertRecipe = typeof recipes.$inferInsert;

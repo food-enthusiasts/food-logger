@@ -15,6 +15,20 @@
       "when": 1719518452816,
       "tag": "0001_create_recipes_table",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1720816043612,
+      "tag": "0002_minor_sharon_ventura",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1720816089654,
+      "tag": "0003_broad_vin_gonzales",
+      "breakpoints": true
     }
   ]
 }
