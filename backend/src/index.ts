@@ -1,6 +1,8 @@
 import express from "express";
 import helmet from "helmet";
 
+import { rootRouter } from "./routers/index.js";
+
 const app = express();
 
 app.use(helmet());
@@ -14,6 +16,8 @@ app.use(helmet());
 // need to also parse x-www-form-urlencoded request bodies? when would those get set?
 // sent by an html form with POST set as the method?
 app.use(express.json());
+
+app.use("/api/v1", rootRouter);
 
 app.get("/", (_, res) => {
   res.send("hello");
@@ -29,4 +33,4 @@ app.use((req, res, next) => {
   res.status(404).send("Sorry can't find that!");
 });
 
-app.listen(5050, () => console.log("server running"));
+app.listen(5050, () => console.log("server running on port 5050"));
