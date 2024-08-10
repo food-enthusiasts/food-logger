@@ -30,8 +30,8 @@ export const recipes = sqliteTable("recipes", {
   // 8/1/2024 setting default values here because sqlite complains about altering a
   // table to add non-null columns without setting default values for the new columns
   // seemingly bc we would be setting a null value
-  ingredientList: text("ingredient-list").notNull().default("1/2 tsp salt"),
-  recipeSteps: text("recipe-steps").notNull().default("cook the food"),
+  ingredientList: text("ingredient_list").notNull().default("1/2 tsp salt"),
+  recipeSteps: text("recipe_steps").notNull().default("cook the food"),
 });
 
 export type Recipe = typeof recipes.$inferSelect;
