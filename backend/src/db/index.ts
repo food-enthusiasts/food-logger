@@ -16,4 +16,4 @@ sqlite.pragma("foreign_keys = ON");
 
 // following drizzle docs for setup
 // https://orm.drizzle.team/docs/get-started-sqlite#better-sqlite3
-export const db = drizzle(sqlite);
+export const db = drizzle(sqlite, { logger: true });
