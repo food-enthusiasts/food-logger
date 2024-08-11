@@ -6,5 +6,5 @@ interface StackProps {
 }
 
 export function Stack({ children, className }: StackProps) {
-  return <div className={`flex flex-col ${className}`}>{children}</div>;
+  return <div className={`flex flex-col ${className ?? ""}`}>{children}</div>;
 }

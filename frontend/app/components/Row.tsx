@@ -6,5 +6,5 @@ interface RowProps {
 }
 
 export function Row({ children, className }: RowProps) {
-  return <div className={`flex ${className}`}>{children}</div>;
+  return <div className={`flex ${className ?? ""}`}>{children}</div>;
 }
