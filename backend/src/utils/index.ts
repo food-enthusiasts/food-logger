@@ -54,3 +54,14 @@ export function validateRecipeStepsList(recipeStepsList: Array<string>) {
     return trimmedRecipeStep[trimmedRecipeStep.length - 1] === "\n";
   });
 }
+
+// not sure if necessary, writing this purely as a starter in case I need to write it
+// function to take any object and nest it within another object under a key called "data"
+// idea is that in our api responses, we'll want a consistent structure where relevant data is under the "data" field
+// probably would want to include other top level keys such as "errors", pagination info, etc?
+// would want to maybe check if there is already a top-level key in appData called "data"?
+export function convertToApiResponse(appData: Record<string, any>) {
+  return {
+    data: appData,
+  };
+}
