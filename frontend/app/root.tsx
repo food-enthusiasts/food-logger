@@ -9,6 +9,8 @@ import {
 import type { LinksFunction } from "@remix-run/node";
 import stylesheet from "./tailwind.css?url";
 
+import { GlobalNav } from "./components/GlobalNav";
+
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: stylesheet }];
 };
@@ -23,7 +25,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <GlobalNav />
+        <div className="min-h-full px-6 py-12 lg:px-8">{children}</div>
         <ScrollRestoration />
         <Scripts />
       </body>
