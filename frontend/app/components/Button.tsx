@@ -18,7 +18,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`px-4 py-2 bg-slate-200 rounded ${className ?? ""}`}
+      className={`px-4 py-2 bg-buttonPrimary rounded ${className ?? ""}`}
       onClick={onClick}
       type={type}
       disabled={disabled}
