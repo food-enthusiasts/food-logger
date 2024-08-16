@@ -18,7 +18,9 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`px-4 py-2 bg-buttonPrimary rounded ${className ?? ""}`}
+      className={`px-4 py-2 bg-buttonPrimary hover:bg-primary-200 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+        className ?? ""
+      }`}
       onClick={onClick}
       type={type}
       disabled={disabled}

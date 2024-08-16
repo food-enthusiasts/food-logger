@@ -5,6 +5,7 @@ import { json, redirect } from "@remix-run/node";
 
 import { Stack } from "../components/Stack";
 import { Button } from "../components/Button";
+import { Input } from "../components/Input";
 
 export async function action({ request }: ActionFunctionArgs) {
   console.log("getting a register request", request);
@@ -20,6 +21,8 @@ export async function loader() {
   return json({ thing: "this is a test" });
 }
 
+// referenced the following tailwind ui page extensively for implementation of this component
+// https://tailwindui.com/components/application-ui/forms/sign-in-forms#component-766a0bf1b8800d383b6c5b77ef9c626c
 export default function RegisterPage() {
   const data = useLoaderData();
   console.log("we have data?", data);
@@ -36,31 +39,20 @@ export default function RegisterPage() {
         <Form action="/register" method="post" className="flex flex-col gap-4">
           <Stack>
             <label htmlFor="email">Username</label>
-            <input
-              name="username"
-              type="text"
-              id="username"
-              className="px-1.5 py-1 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-            ></input>
+            <Input name="username" type="text" id="username"></Input>
           </Stack>
           <Stack>
             <label htmlFor="email">Email</label>
-            <input
+            <Input
               name="email"
               type="email"
               id="email"
               autoComplete="email"
-              className="px-1.5 py-1 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
-            ></input>
+            ></Input>
           </Stack>
           <Stack>
             <label htmlFor="password">Password</label>
-            <input
-              name="password"
-              type="password"
-              id="password"
-              className="px-1.5 py-1 border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-400 sm:text-sm"
-            ></input>
+            <Input name="password" type="password" id="password"></Input>
           </Stack>
           {/* 
             because a flex col defaults to align-items: stretch, just placing the

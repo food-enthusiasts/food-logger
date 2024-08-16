@@ -1,4 +1,6 @@
 import { Link } from "@remix-run/react";
+
+import { LinkButton } from "./LinkButton";
 // building off tailwind ui "With stacked flyout menu" header design
 // https://tailwindui.com/components/marketing/elements/headers#component-27e5f71ced91b88e3f6b59ca69033a83
 export function GlobalNav() {
@@ -14,16 +16,27 @@ export function GlobalNav() {
         {/* mobile, tablet hamburger nav */}
         <HamburgerMenu />
         {/* desktop nav items */}
-        <div className="hidden lg:flex gap-20">
-          <Link to="/register">Register</Link>
-          <Link to="/login">Log In</Link>
-          <div>adas</div>
+        <div className="hidden lg:flex gap-x-10 items-center">
+          <LinkButton type="text" toHref="/register">
+            Register
+          </LinkButton>
+          <LinkButton type="text" toHref="/login">
+            Log In
+          </LinkButton>
+          {/* 
+            using this link button as a baseline:
+            https://flowbite.com/docs/typography/links/#button
+          */}
+          <LinkButton type="text" toHref="/">
+            Read more
+          </LinkButton>
         </div>
       </nav>
     </header>
   );
 }
 // implementation taken from https://tailwindui.com/components/marketing/elements/headers#component-27e5f71ced91b88e3f6b59ca69033a83
+// TODO: make hamburger menu functional, at the moment it can't be interacted with
 function HamburgerMenu() {
   return (
     <div className="flex lg:hidden">
