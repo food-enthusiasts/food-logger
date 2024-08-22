@@ -9,6 +9,7 @@
     "dev": "nodemon --exec \"node --inspect --loader ts-node/esm\" src/index.ts",
     "db-generate": "drizzle-kit generate",
     "db-migrate": "drizzle-kit migrate",
+    "db-drop-migration": "drizzle-kit drop",
     "seed": "node --inspect --loader ts-node/esm src/db/seed.ts"
   },
   "author": "",
@@ -29,12 +30,12 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "better-sqlite3": "^11.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.31.2",
     "express": "^4.19.2",
     "helmet": "^7.1.0",
+    "mysql2": "^3.11.0",
     "pino-http": "^10.1.0"
   }
 }
