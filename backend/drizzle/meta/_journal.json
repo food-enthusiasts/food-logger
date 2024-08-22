@@ -1,47 +1,19 @@
 {
   "version": "7",
-  "dialect": "sqlite",
+  "dialect": "mysql",
   "entries": [
     {
       "idx": 0,
-      "version": "6",
-      "when": 1719415315602,
-      "tag": "0000_numerous_lord_tyger",
+      "version": "5",
+      "when": 1724304392726,
+      "tag": "0000_sloppy_elektra",
       "breakpoints": true
     },
     {
       "idx": 1,
-      "version": "6",
-      "when": 1719518452816,
-      "tag": "0001_create_recipes_table",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1720816043612,
-      "tag": "0002_minor_sharon_ventura",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1720816089654,
-      "tag": "0003_broad_vin_gonzales",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1722489500615,
-      "tag": "0004_cynical_cerebro",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "6",
-      "when": 1723328341292,
-      "tag": "0005_nasty_aqueduct",
+      "version": "5",
+      "when": 1724304442773,
+      "tag": "0001_large_psynapse",
       "breakpoints": true
     }
   ]

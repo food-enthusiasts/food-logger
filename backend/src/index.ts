@@ -1,5 +1,6 @@
 import express from "express";
 import helmet from "helmet";
+import "dotenv/config";
 
 import { rootRouter } from "./routers/index.js";
 
