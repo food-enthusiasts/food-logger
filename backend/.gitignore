@@ -1,6 +1,0 @@
-# Dependency directories
-node_modules
-
-.env
-
-src/db/foodlogger-dev*.db*

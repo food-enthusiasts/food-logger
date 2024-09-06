@@ -4,6 +4,11 @@
  * and should modify this configuration to best suit your team's needs.
  */
 
+// trying to get rid of eslint error/warning for eslint(import/no-unresolved) which errors when I import using an alias, ~ in this case
+// importing this way actually seems to run fine, but eslint complains about it and I've been trying to resolve this but with no luck so far
+// try to reference this issue to see if I can solve the problem eventually:
+// https://github.com/eslint/eslint/discussions/14667
+
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
