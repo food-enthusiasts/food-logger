@@ -30,9 +30,9 @@ export type InsertUser = typeof users.$inferInsert; // insert type
 export const recipes = mysqlTable("recipes", {
   id: int("id").primaryKey(),
   recipeName: varchar("recipe_name", { length: 256 }).notNull(),
-  userId: int("user_id")
-    .references(() => users.id)
-    .notNull(),
+  // userId: int("user_id")
+  //   .references(() => users.id)
+  //   .notNull(),
   // setting ingredient-list and recipe-steps columns as text fields for now and try
   // to ensure ingredients/steps are separated by new-lines during input validations
   ingredientList: text("ingredient_list").notNull(),

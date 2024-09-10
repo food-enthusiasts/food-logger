@@ -15,6 +15,13 @@
       "when": 1725743624212,
       "tag": "0001_silent_dreaming_celestial",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1726009928292,
+      "tag": "0002_supreme_silvermane",
+      "breakpoints": true
     }
   ]
 }
