@@ -11,7 +11,7 @@ import {
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
-  id: int("id").primaryKey(),
+  id: int("id").autoincrement().primaryKey(),
   username: varchar("username", { length: 256 }).notNull().unique(),
   email: varchar("email", { length: 256 }).notNull().unique(),
   // seems like bcrypt can output hashes that are 60 characters long
@@ -28,7 +28,7 @@ export type User = typeof users.$inferSelect; // return type when queried
 export type InsertUser = typeof users.$inferInsert; // insert type
 
 export const recipes = mysqlTable("recipes", {
-  id: int("id").primaryKey(),
+  id: int("id").autoincrement().primaryKey(),
   recipeName: varchar("recipe_name", { length: 256 }).notNull(),
   // userId: int("user_id")
   //   .references(() => users.id)
