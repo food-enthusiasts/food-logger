@@ -1,24 +1,82 @@
-import type { ActionFunctionArgs } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 
 import { Form, useLoaderData } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 
-import { Stack } from "../components/Stack";
-import { Button } from "../components/Button";
-import { Input } from "../components/Input";
+import { z } from "zod";
 
+import { createUserSession, getUserIdFromSession } from "~/session.server";
+
+import { Stack } from "~/components/Stack";
+import { Button } from "~/components/Button";
+import { Input } from "~/components/Input";
+
+import {
+  UserService,
+  ExistingUsernameOrEmailError,
+} from "~/services/user.server";
+
+// steps
+// 1. call method from session module to ensure user we're not dealing with a logged in user, redirect to home if logged in
+// 2. validate data with zod to make sure working with correct shape
+// 3. pass validated data to user service to create the user, perform validations here?
+// 3a. user service calls user repo to actually interact with db and persist user to the db
+// 4. after getting back returned user id from the user service call, save user to session and redirect to /home
+// or some other route (haven't made this yet) representing user's home page
+// to consider: error handling? what if zod throws? what if user service throws? what if user repo throws?
 export async function action({ request }: ActionFunctionArgs) {
-  console.log("getting a register request", request);
-  const body = await request.formData();
+  try {
+    const isLoggedIn = (await getUserIdFromSession(request)) !== undefined;
 
-  console.log("the req body", body);
+    if (isLoggedIn) {
+      return redirect("/home");
+    }
 
-  return redirect("/");
+    const formData = Object.fromEntries(await request.formData());
+    const registerUserSchema = z
+      .object({
+        username: z.string(),
+        email: z.string().email(),
+        password: z.string(),
+      })
+      // use strict() call here to ensure we only handle the fields defined above. If the form sends another field
+      // that isn't mentioned above, this will throw a ZodError
+      // by default, however, if we receive an unexpected field then zod would silently drop it from the parsed object
+      .strict();
+
+    const coercedFormData = registerUserSchema.parse(formData);
+
+    const userRepo = new UserService();
+    const newUserId = await userRepo.registerUser({
+      username: coercedFormData.username,
+      email: coercedFormData.email,
+      password: coercedFormData.password,
+    });
+
+    console.log("id?", newUserId);
+
+    return await createUserSession({
+      request,
+      userId: newUserId,
+      redirectTo: "/home",
+    });
+  } catch (err) {
+    console.error("Dealing with err in register action", err);
+
+    if (err instanceof ExistingUsernameOrEmailError) {
+      return json({ error: "Email or username already in use" });
+    }
+
+    return json({ error: err });
+  }
 }
 
-export async function loader() {
-  console.log("loading register data!");
-  return json({ thing: "this is a test" });
+export async function loader({ request }: LoaderFunctionArgs) {
+  // attempt to read a userId from the session. If it exists, means we have a logged in user and should redirect
+  // them to their home page
+  const userId = await getUserIdFromSession(request);
+  if (userId) return redirect("/home");
+  return json({});
 }
 
 // referenced the following tailwind ui page extensively for implementation of this component
