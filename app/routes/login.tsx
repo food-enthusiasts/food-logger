@@ -1,24 +1,65 @@
-import type { ActionFunctionArgs } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 
-import { Form } from "@remix-run/react";
+import { Form, useActionData } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 
-import { Button } from "../components/Button";
-import { Stack } from "../components/Stack";
-import { Input } from "../components/Input";
+import { z } from "zod";
+
+import { getUserIdFromSession, createUserSession } from "~/session.server";
+import { UserService } from "~/services/user.server";
+
+import { Button } from "~/components/Button";
+import { Stack } from "~/components/Stack";
+import { Input } from "~/components/Input";
 
 export async function action({ request }: ActionFunctionArgs) {
-  console.log("getting a request", request);
-  const body = await request.formData();
+  try {
+    const formData = Object.fromEntries(await request.formData());
+    const loginFormSchema = z
+      .object({
+        email: z.string().email(),
+        password: z.string(),
+      })
+      .strict();
 
-  console.log("the req body", body);
+    const coercedFormData = loginFormSchema.parse(formData);
 
-  return redirect("/");
+    const userService = new UserService();
+    const verifiedUser = userService.verifyLogin({ ...coercedFormData });
+
+    if (!verifiedUser)
+      return json(
+        {
+          errors: {
+            email: "Invalid email or password",
+            password: null,
+            unknown: null,
+          },
+        },
+        { status: 400 }
+      );
+
+    return createUserSession({ request, userId: 1, redirectTo: "/home" });
+  } catch (err) {
+    return json(
+      {
+        errors: {
+          email: null,
+          password: null,
+          unknown: "Could not process request",
+        },
+      },
+      { status: 500 }
+    );
+  }
 }
 
-export async function loader() {
-  console.log("loading data!");
-  return json({ thing: "this is a test" });
+export async function loader({ request }: LoaderFunctionArgs) {
+  // attempt to read a userId from the session. If it exists, means we have a logged in user and should redirect
+  // them to their home page
+  const userId = await getUserIdFromSession(request);
+  if (userId) return redirect("/home");
+  return json({});
 }
 
 // referenced the following tailwind ui page extensively for implementation of this component

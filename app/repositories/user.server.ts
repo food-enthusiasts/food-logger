@@ -5,10 +5,12 @@ import { db } from "../db/index.server";
 import { users } from "~/db/schema.server";
 import type { User } from "~/db/schema.server";
 
+export class UserRepoValidationError extends Error {}
+
 // is it ok to instantiate multiple instances of this class, or should
 // only one instance ever exist at a time?
 export class UserRepository {
-  client: typeof db;
+  private client: typeof db;
   constructor(connection: typeof db = db) {
     this.client = connection;
   }
@@ -22,14 +24,38 @@ export class UserRepository {
 
       if (maybeUser.length == 0) return null;
       if (maybeUser.length > 1)
-        throw new Error(`found more than one user for given userId: ${userId}`);
+        throw new UserRepoValidationError(
+          `Found more than one user for given userId: ${userId}`
+        );
 
       return maybeUser[0];
-    } catch (e: unknown) {
+    } catch (err) {
       // should I rethrow the error that occurs? Would presumably come from drizzle. Does drizzle throw an error if user not found?
       // probably not
-      console.error("Error in findUserById", e);
-      throw e;
+      console.error("Error in user repo: findUserById", err);
+      throw err;
+    }
+  }
+
+  async findUserByEmail(userEmail: string) {
+    try {
+      const maybeUser = await this.client
+        .select()
+        .from(users)
+        .where(eq(users.email, userEmail));
+
+      // user wasn't found with given email
+      if (maybeUser.length === 0) return null;
+      // somehow, more than one user was returned for a given email which should not happen because emails are unique in the db
+      if (maybeUser.length > 1)
+        throw new UserRepoValidationError(
+          `Found more than one user for given userEmail: ${userEmail}`
+        );
+
+      return maybeUser[0];
+    } catch (err) {
+      console.error("Error in user repo: findUserByEmail", err);
+      throw err;
     }
   }
 
@@ -48,11 +74,11 @@ export class UserRepository {
       if (maybeUsers.length == 0) return null;
 
       return maybeUsers;
-    } catch (e: unknown) {
+    } catch (err) {
       // should I rethrow the error that occurs? Would presumably come from drizzle. Does drizzle throw an error if user not found?
       // probably not
-      console.error("Error in findUserById", e);
-      throw e;
+      console.error("Error in user repo: findUserByEmailOrUsername", err);
+      throw err;
     }
   }
 
@@ -73,14 +99,14 @@ export class UserRepository {
         .$returningId();
 
       if (newUserCreationResponse.length !== 1)
-        throw new Error(
-          "created user response either returned 0 entries or more than 1 entry"
+        throw new UserRepoValidationError(
+          "Created user response either returned 0 entries or more than 1 entry"
         );
 
       return newUserCreationResponse[0].id;
-    } catch (e: unknown) {
-      console.error("Error in createUser", e);
-      throw e;
+    } catch (err) {
+      console.error("Error in user repo: createUser", err);
+      throw err;
     }
   }
 }

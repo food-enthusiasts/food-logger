@@ -1,6 +1,6 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useActionData } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 
 import { z } from "zod";
@@ -46,11 +46,38 @@ export async function action({ request }: ActionFunctionArgs) {
 
     const coercedFormData = registerUserSchema.parse(formData);
 
-    const userRepo = new UserService();
-    const newUserId = await userRepo.registerUser({
-      username: coercedFormData.username,
-      email: coercedFormData.email,
-      password: coercedFormData.password,
+    // some password validations
+    if (
+      typeof coercedFormData.password !== "string" ||
+      coercedFormData.password.length === 0
+    )
+      // using this error response structure from https://github.com/remix-run/examples/blob/main/_official-blog-tutorial/app/routes/login.tsx
+      // feels a little clunky but I just want to standardize on something for now, come back to later
+      return json(
+        {
+          errors: {
+            email: null,
+            password: "Password is required",
+            unknown: null,
+          },
+        },
+        { status: 400 }
+      );
+    if (coercedFormData.password.length < 8)
+      return json(
+        {
+          errors: {
+            email: null,
+            password: "Password is too short",
+            unknown: null,
+          },
+        },
+        { status: 400 }
+      );
+
+    const userService = new UserService();
+    const newUserId = await userService.registerUser({
+      ...coercedFormData,
     });
 
     console.log("id?", newUserId);
@@ -64,10 +91,28 @@ export async function action({ request }: ActionFunctionArgs) {
     console.error("Dealing with err in register action", err);
 
     if (err instanceof ExistingUsernameOrEmailError) {
-      return json({ error: "Email or username already in use" });
+      return json(
+        {
+          errors: {
+            email: "Email or username already in use",
+            password: null,
+            unknown: null,
+          },
+        },
+        { status: 400 }
+      );
     }
 
-    return json({ error: err });
+    return json(
+      {
+        errors: {
+          email: null,
+          password: null,
+          unknown: "Could not process request",
+        },
+      },
+      { status: 500 }
+    );
   }
 }
 
