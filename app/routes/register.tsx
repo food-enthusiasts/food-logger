@@ -44,6 +44,9 @@ export async function action({ request }: ActionFunctionArgs) {
       // by default, however, if we receive an unexpected field then zod would silently drop it from the parsed object
       .strict();
 
+    // html input validation for email allows for a string like 'asd@example', but zod throws an error here when
+    // trying to parse it as an email so this can potentially throw when using default html email validation (which
+    // is what I am doing currently)
     const coercedFormData = registerUserSchema.parse(formData);
 
     // some password validations
@@ -90,6 +93,24 @@ export async function action({ request }: ActionFunctionArgs) {
   } catch (err) {
     console.error("Dealing with err in register action", err);
 
+    // do some logic to try to extract zod validation errors. For now just assuming zod will only fail to parse emails
+    // and not passwords or usernames
+    if (
+      err instanceof z.ZodError &&
+      err.issues[0].message === "Invalid email"
+    ) {
+      return json(
+        {
+          errors: {
+            email: "Email is not in a valid format",
+            password: null,
+            unknown: null,
+          },
+        },
+        { status: 400 }
+      );
+    }
+
     if (err instanceof ExistingUsernameOrEmailError) {
       return json(
         {
@@ -127,48 +148,62 @@ export async function loader({ request }: LoaderFunctionArgs) {
 // referenced the following tailwind ui page extensively for implementation of this component
 // https://tailwindui.com/components/application-ui/forms/sign-in-forms#component-766a0bf1b8800d383b6c5b77ef9c626c
 export default function RegisterPage() {
-  const data = useLoaderData();
-  console.log("we have data?", data);
+  const actionData = useActionData<typeof action>();
 
   return (
-    <Stack className="sm:mx-auto sm:w-full sm:max-w-sm py-8 shadow-lg rounded-md">
-      <div className="py-6">
-        {/* leading-* changes line-height, tracking-* changes letter-spacing */}
-        <h2 className="text-center text-2xl leading-9 tracking-tight">
-          Sign up for an account
-        </h2>
-      </div>
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm px-4 py-6">
-        <Form action="/register" method="post" className="flex flex-col gap-4">
-          <Stack>
-            <label htmlFor="email">Username</label>
-            <Input name="username" type="text" id="username"></Input>
-          </Stack>
-          <Stack>
-            <label htmlFor="email">Email</label>
-            <Input
-              name="email"
-              type="email"
-              id="email"
-              autoComplete="email"
-            ></Input>
-          </Stack>
-          <Stack>
-            <label htmlFor="password">Password</label>
-            <Input name="password" type="password" id="password"></Input>
-          </Stack>
-          {/* 
+    <>
+      {actionData?.errors.email ? (
+        <Stack>{actionData?.errors.email}</Stack>
+      ) : null}
+      {actionData?.errors.password ? (
+        <Stack>{actionData?.errors.password}</Stack>
+      ) : null}
+      {actionData?.errors.unknown ? (
+        <Stack>{actionData?.errors.unknown}</Stack>
+      ) : null}
+      <Stack className="sm:mx-auto sm:w-full sm:max-w-sm py-8 shadow-lg rounded-md">
+        <div className="py-6">
+          {/* leading-* changes line-height, tracking-* changes letter-spacing */}
+          <h2 className="text-center text-2xl leading-9 tracking-tight">
+            Sign up for an account
+          </h2>
+        </div>
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm px-4 py-6">
+          <Form
+            action="/register"
+            method="post"
+            className="flex flex-col gap-4"
+          >
+            <Stack>
+              <label htmlFor="email">Username</label>
+              <Input name="username" type="text" id="username"></Input>
+            </Stack>
+            <Stack>
+              <label htmlFor="email">Email</label>
+              <Input
+                name="email"
+                type="email"
+                id="email"
+                autoComplete="email"
+              ></Input>
+            </Stack>
+            <Stack>
+              <label htmlFor="password">Password</label>
+              <Input name="password" type="password" id="password"></Input>
+            </Stack>
+            {/* 
             because a flex col defaults to align-items: stretch, just placing the
             Button in a Stack will make the Button stretch to take up the full width
             - alternatively, could give the button 100% width through className w-full
           */}
-          <Stack className="pt-4">
-            <Button className="bg-primary-300" type="submit">
-              Submit
-            </Button>
-          </Stack>
-        </Form>
-      </div>
-    </Stack>
+            <Stack className="pt-4">
+              <Button className="bg-primary-300" type="submit">
+                Submit
+              </Button>
+            </Stack>
+          </Form>
+        </div>
+      </Stack>
+    </>
   );
 }
