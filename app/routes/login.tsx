@@ -28,7 +28,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const coercedFormData = loginFormSchema.parse(formData);
 
     const userService = new UserService();
-    const verifiedUser = userService.verifyLogin({ ...coercedFormData });
+    const verifiedUser = await userService.verifyLogin({ ...coercedFormData });
 
     if (!verifiedUser)
       return json(
