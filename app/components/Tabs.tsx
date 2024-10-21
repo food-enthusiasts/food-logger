@@ -11,6 +11,14 @@ import { ButtonBase } from "./ButtonBase";
 
 // moreso making this component as an educational exercise, not that I anticipate needing to create a lot of UI with tabs
 
+/* 
+  nice to have with TabsRoot, Tab, and TabContent would be to ensure that
+  the value passed into Tab and TabContent, and initTabValue passed into
+  TabsRoot was constrained by typescript somehow so that I can specify a string
+  union and ensure that the value/initTabValue props only ever are passed values from that
+  union, otherwise get a type error 
+*/
+
 const TabContext = createContext<{
   tabValue: string;
   setTabValue: Dispatch<SetStateAction<string>>;
@@ -57,7 +65,6 @@ export function TabsRoot({ initTabValue, children }: TabsRootProps) {
 interface TabProps {
   label: string;
   value: string;
-  children: ReactNode;
   className?: string;
 }
 
