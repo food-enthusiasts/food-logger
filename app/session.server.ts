@@ -5,6 +5,10 @@ import { createCookieSessionStorage, redirect } from "@remix-run/node";
 
 type SessionData = { userId: number };
 
+function getUserById(userId: number) {
+  return new Promise((res) => res({ userId }));
+}
+
 const SESSION_SECRET = process.env.SESSION_SECRET ?? "pwn4me";
 
 if (!SESSION_SECRET) {
@@ -55,12 +59,12 @@ export async function getUserIdFromSession(
   return sessionUserId;
 }
 
-export async function getUser(request: Request) {
+export async function getUserFromSession(request: Request) {
   const userId = await getUserIdFromSession(request);
 
-  // should we throw an error here instead?
-  if (!userId) return null;
-
+  // in case we weren't able to find a userId in the session, opt to log user out. We do this in loaders
+  // where if getUserIdFromSession returns a null or undefined val we redirect to the /login route
+  if (!userId) throw await logout(request);
   // try to find user in our db - getUserById doesn't exist yet
   const user = await getUserById(userId);
 
@@ -130,6 +134,8 @@ export async function requireUserId(
 
 // unsure how or where to use this - seems similar to requireUserId except we throw redirect if a user isn't found, and also
 // return a user instead of a userId
+// in remix action functions, I might opt to call requireUserId, then use the resulting uerId to fetch the user using a user service object
+// instead of pulling in the user service here
 export async function requireUser(request: Request) {
   const userId = await requireUserId(request);
 
