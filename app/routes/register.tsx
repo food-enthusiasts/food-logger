@@ -175,7 +175,7 @@ export default function RegisterPage() {
             className="flex flex-col gap-4"
           >
             <Stack>
-              <label htmlFor="email">Username</label>
+              <label htmlFor="username">Username</label>
               <Input name="username" type="text" id="username"></Input>
             </Stack>
             <Stack>
