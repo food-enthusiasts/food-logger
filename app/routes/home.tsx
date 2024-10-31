@@ -1,11 +1,10 @@
-import type { ActionFunctionArgs } from "@remix-run/node";
+import { getUserIdFromSession } from "~/session.server";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import { Outlet, useLoaderData } from "@remix-run/react";
 
-// import { Form } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 
-// import { Button } from "../components/Button";
 import { Stack } from "../components/Stack";
-// import { Input } from "../components/Input";
 
 export async function action({ request }: ActionFunctionArgs) {
   console.log("getting a request from /home", request);
@@ -16,11 +15,24 @@ export async function action({ request }: ActionFunctionArgs) {
   return redirect("/home");
 }
 
-export async function loader() {
+export async function loader({ request }: LoaderFunctionArgs) {
+  const userId = await getUserIdFromSession(request);
+
+  if (!userId) return redirect("/login");
+
+  // fetch data for user's recipes and created dishes
+  // use zod here for formatting and typing?
+
   console.log("loading data for /home!");
   return json({ thing: "this is a home test" });
 }
 
 export default function Home() {
-  return <Stack>Hello World</Stack>;
+  const data = useLoaderData<typeof loader>();
+  data;
+  return (
+    <Stack>
+      <Outlet />
+    </Stack>
+  );
 }

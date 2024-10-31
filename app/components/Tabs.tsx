@@ -8,6 +8,7 @@ import {
 
 import { Box } from "./Box";
 import { ButtonBase } from "./ButtonBase";
+import { Stack } from "./Stack";
 
 // moreso making this component as an educational exercise, not that I anticipate needing to create a lot of UI with tabs
 
@@ -125,3 +126,41 @@ export function TabContent({ value, children, className }: TabContentProps) {
     <TabContent>tab 2 stuff</TabContent>
   </TabsRoot>; 
 */
+
+export function TestTabs() {
+  return (
+    <Box className="border-solid border-2 border-gray-600">
+      {/* 
+        nice to have with TabsRoot, Tab, and TabContent would be to ensure that
+        the value passed into Tab and TabContent, and initTabValue passed into
+        TabsRoot was constrained by typescript somehow so that I can specify a string
+        union and ensure that the value/initTabValue props only ever are passed values from that
+        union, otherwise get a type error 
+      */}
+      <TabsRoot initTabValue="recipes">
+        <Box className="bg-amber-300 p-1 gap-3 flex">
+          <Stack className="p-1 bg-slate-300 flex-1">
+            <Tab label="Recipes" value="recipes" />
+          </Stack>
+          <Stack className="p-1 bg-slate-300 flex-1">
+            <Tab label="Meals" value="meals" />
+          </Stack>
+        </Box>
+        <TabContent value="recipes">
+          <RecipeList />
+        </TabContent>
+        <TabContent value="meals">
+          <MealsList />
+        </TabContent>
+      </TabsRoot>
+    </Box>
+  );
+}
+
+function RecipeList() {
+  return <Stack>Hello recipes written</Stack>;
+}
+
+function MealsList() {
+  return <Stack>Hello meals cooked</Stack>;
+}
