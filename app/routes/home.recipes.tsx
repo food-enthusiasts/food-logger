@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, Outlet, useLoaderData } from "@remix-run/react";
 
 import { json, redirect } from "@remix-run/node";
 
@@ -28,6 +28,7 @@ export default function HomeRecipes() {
       <Stack>
         <Link to="/home">Back to home</Link>
         <h1>Hello recipes</h1>
+        <Outlet />
       </Stack>
     </div>
   );
