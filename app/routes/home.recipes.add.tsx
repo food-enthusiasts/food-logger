@@ -1,9 +1,14 @@
-import { useState } from "react";
-
-import { json } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import type { ActionFunctionArgs } from "@remix-run/node";
 
+import { getUserIdFromSession } from "~/session.server";
+
 import { Form, Link } from "@remix-run/react";
+
+import { useState } from "react";
+
+import { RecipeService } from "~/services/recipe.server";
+import { z } from "zod";
 
 import { Input } from "~/components/Input";
 import { Button } from "~/components/Button";
@@ -12,15 +17,40 @@ import { Row } from "~/components/Row";
 import { Stack } from "~/components/Stack";
 
 export async function action({ request }: ActionFunctionArgs) {
+  const newRecipeSchema = z
+    .object({
+      userId: z.number(),
+      recipeName: z.string().min(1),
+      ingredientsList: z.array(z.string().min(1)),
+      recipeSteps: z.array(z.string().min(1)).nonempty(),
+    })
+    .strict();
+
+  const userId = await getUserIdFromSession(request);
+
   const formData = await request.formData();
 
+  const recipeName = formData.get("recipeName");
   const ingredientsList = formData.getAll("ingredients");
   const stepsList = formData.getAll("steps");
 
-  console.log("ingreds", ingredientsList);
-  console.log("steps", stepsList);
+  // probably do zod parsing here - can throw
+  const parsedRecipe = newRecipeSchema.parse({
+    userId,
+    recipeName,
+    ingredientsList,
+    recipeSteps: stepsList,
+  });
 
-  return json({ res: 1 });
+  console.log("parsed recipe", parsedRecipe);
+
+  // probably do db update here - can throw
+  const recipeService = new RecipeService();
+  recipeService.addNewRecipe({
+    ...parsedRecipe,
+  });
+
+  return redirect("/home/recipes");
 }
 
 export default function AddRecipe() {

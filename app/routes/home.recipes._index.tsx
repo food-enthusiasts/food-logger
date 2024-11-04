@@ -1,30 +1,57 @@
-import { Link } from "@remix-run/react";
+import type { LoaderFunctionArgs } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+
+import { getUserIdFromSession } from "~/session.server";
+import { RecipeService } from "~/services/recipe.server";
+
+import { useLoaderData, Link } from "@remix-run/react";
 
 import { Stack } from "~/components/Stack";
 
-interface RecipesIndexProps {}
+export async function loader({ request }: LoaderFunctionArgs) {
+  try {
+    const userId = await getUserIdFromSession(request);
+
+    if (userId === undefined) throw redirect("/login");
+
+    const recipeService = new RecipeService();
+    const userRecipes = await recipeService.findRecipesByUserId(userId);
+
+    // note: createdAt and updatedAt fields in a userRecipes element are Date objects
+    // that get serialized to strings on the front end when returned from this loader
+    return json({ data: { recipes: userRecipes } });
+  } catch (err) {
+    console.error("err in loader home/recipes/_index");
+  }
+}
 
 interface Recipe {
   id: number;
   recipeName: string;
-  recipeIngredients: Array<string>;
+  userId: number;
+  ingredientList: Array<string>;
   recipeSteps: Array<string>;
 }
 
-export default function RecipesIndex(props: RecipesIndexProps) {
-  props;
+export default function RecipesIndex() {
+  const data = useLoaderData<typeof loader>();
+
+  const fetchedRecipes = data.data.recipes;
+
+  console.log("fetched recipe data", data);
+  const tempCombinedRecipes = [...fetchedRecipes, ...placeholderRecipes];
 
   return (
     <Stack>
       <Link to="./add">Add a Recipe</Link>
       <ul className="flex flex-col gap-4">
-        {placeholderRecipes.map((recipe) => {
+        {tempCombinedRecipes.map((recipe) => {
           return (
             <li key={recipe.id} className="bg-amber-600">
               <Stack>
                 <p>Title: {recipe.recipeName}</p>
                 <ol>
-                  {recipe.recipeIngredients.map((ingredient) => {
+                  {recipe.ingredientList.map((ingredient) => {
                     return <li key={ingredient}>{ingredient}</li>;
                   })}
                 </ol>
@@ -44,9 +71,10 @@ export default function RecipesIndex(props: RecipesIndexProps) {
 
 const placeholderRecipes: Array<Recipe> = [
   {
-    id: 1,
+    id: 1111,
+    userId: 1,
     recipeName: "Baked Salmon",
-    recipeIngredients: [
+    ingredientList: [
       "1 tsp salt",
       "1 tsp black pepper",
       "2 lbs salmon",
@@ -60,9 +88,10 @@ const placeholderRecipes: Array<Recipe> = [
     ],
   },
   {
-    id: 2,
+    id: 22222,
+    userId: 1,
     recipeName: "Poached Salmon",
-    recipeIngredients: ["1 tsp salt", "1 tsp black pepper", "2 lbs salmon"],
+    ingredientList: ["1 tsp salt", "1 tsp black pepper", "2 lbs salmon"],
     recipeSteps: [
       "salt the salmon on both sides",
 
@@ -71,9 +100,10 @@ const placeholderRecipes: Array<Recipe> = [
     ],
   },
   {
-    id: 3,
+    id: 33333,
+    userId: 1,
     recipeName: "Panfried Chickpeas",
-    recipeIngredients: [
+    ingredientList: [
       "1/2 tsp salt",
       "1 tsp black pepper",
       "1 15 oz can chickpeas",
@@ -89,9 +119,10 @@ const placeholderRecipes: Array<Recipe> = [
     ],
   },
   {
-    id: 4,
+    id: 44444,
+    userId: 1,
     recipeName: "Roasted Broccoli",
-    recipeIngredients: [
+    ingredientList: [
       "1 tsp salt",
       "1 tsp black pepper",
       "1 head broccoli",

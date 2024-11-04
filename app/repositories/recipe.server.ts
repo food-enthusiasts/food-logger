@@ -12,8 +12,8 @@ export class RecipeRepository {
   }
 
   async createRecipe({
-    recipeName,
     userId,
+    recipeName,
     ingredientList,
     recipeSteps,
   }: Pick<Recipe, "recipeName" | "userId" | "ingredientList" | "recipeSteps">) {
