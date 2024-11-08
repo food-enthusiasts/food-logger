@@ -54,24 +54,44 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function AddRecipe() {
-  const [ingredientsCount, setIngredientsCount] = useState(1);
-  const [stepsCount, setStepsCount] = useState(1);
+  const [ingredientsCountList, setIngredientsCountList] = useState([1]);
+  const [stepsCountList, setStepsCountList] = useState([1]);
 
   function addIngredientField() {
-    setIngredientsCount(ingredientsCount + 1);
+    const nextNumber =
+      ingredientsCountList[ingredientsCountList.length - 1] + 1;
+    setIngredientsCountList([...ingredientsCountList, nextNumber]);
   }
 
-  function deleteIngredientField(ingredientIdx) {
+  function deleteIngredientField(ingredientNum: number) {
     // if ingredientsCount is an array that is offset by 1, aka value
     // at idx 0 is 1 all the way to idx + 1, if we filter the array to remove say
     // idx 3 aka step 4, what does this look like?
+    setIngredientsCountList(
+      ingredientsCountList.filter((ingNum) => ingNum !== ingredientNum)
+    );
   }
 
   function addStepField() {
-    setStepsCount(stepsCount + 1);
+    const nextNumber = stepsCountList[stepsCountList.length - 1] + 1;
+    setStepsCountList([...stepsCountList, nextNumber]);
   }
 
-  function deleteStepField(stepIdx) {}
+  function deleteStepField(stepNum: number) {
+    setStepsCountList(stepsCountList.filter((step) => step !== stepNum));
+  }
+
+  // say we have ingredientsCountList initialized as [1]
+  // when we map over ingredientCountList, we have access to a number (var name of ingField) (1 indexed) and the index, ingIdx, (0 indexed)
+  // key = "ingredient-" + ingredientField
+  // input field - name="ingredients", id={`ingredients-${ingredientField}`}
+  // input label - htmlFor={`ingredients-${ingredientField}`}, labelChildText=`ingredient ${ingIdx + 1}`
+  // even if we delete or rearrange the fields, the label is based off the index so will always label fields as 1 through n
+
+  // potential for bugs around duplicate entries possible though?
+  // 1. add 3 more ingredients, have ingredientsCountList = [1, 2, 3, 4]
+  // 2. delete the second ingredient, ingredientsCountList = [1, 3, 4]
+  // 3. add another ingredient, ingredientsCountList = [1, 3, 4, 5]
 
   return (
     <Stack>
@@ -85,22 +105,30 @@ export default function AddRecipe() {
         <Stack>
           {/* ingredients container div */}
           <div>
-            {Array.from({ length: ingredientsCount }).map((_, ingIdx) => {
+            {ingredientsCountList.map((ingredientField, ingredientIdx) => {
               return (
-                <Row key={`ingredient-${ingIdx}`} className="justify-between">
+                <Row
+                  key={`ingredient-${ingredientField}`}
+                  className="justify-between"
+                >
                   <label
-                    htmlFor={`ingredients-${ingIdx + 1}`}
+                    htmlFor={`ingredients-${ingredientField}`}
                     className="sr-only"
                   >
-                    {`ingredient ${ingIdx + 1}`}
+                    {`ingredient ${ingredientIdx + 1}`}
                   </label>
                   <Input
                     name="ingredients"
                     type="text"
-                    id={`ingredients-${ingIdx + 1}`}
+                    id={`ingredients-${ingredientField}`}
                   ></Input>
-                  {ingIdx > 0 ? (
-                    <ButtonBase className="px-4">X</ButtonBase>
+                  {ingredientIdx > 0 ? (
+                    <ButtonBase
+                      className="px-4"
+                      onClick={() => deleteIngredientField(ingredientField)}
+                    >
+                      X
+                    </ButtonBase>
                   ) : null}
                 </Row>
               );
@@ -113,19 +141,27 @@ export default function AddRecipe() {
         <Stack>
           {/* steps container div */}
           <div>
-            {Array.from({ length: stepsCount }).map((_, stepIdx) => {
+            {stepsCountList.map((stepCountField, stepCountIdx) => {
               return (
-                <Row key={`step-${stepIdx}`} className="justify-between">
-                  <label htmlFor={`steps-${stepIdx + 1}`} className="sr-only">
-                    {`step ${stepIdx + 1}`}
+                <Row key={`step-${stepCountField}`} className="justify-between">
+                  <label
+                    htmlFor={`steps-${stepCountField}`}
+                    className="sr-only"
+                  >
+                    {`step ${stepCountIdx + 1}`}
                   </label>
                   <Input
                     name="steps"
                     type="text"
-                    id={`steps-${stepIdx + 1}`}
+                    id={`steps-${stepCountField}`}
                   ></Input>
-                  {stepIdx > 0 ? (
-                    <ButtonBase className="px-4">X</ButtonBase>
+                  {stepCountIdx > 0 ? (
+                    <ButtonBase
+                      className="px-4"
+                      onClick={() => deleteStepField(stepCountField)}
+                    >
+                      X
+                    </ButtonBase>
                   ) : null}
                 </Row>
               );
