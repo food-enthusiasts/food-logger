@@ -74,7 +74,7 @@ export class RecipeService {
         (idx < ingredientsList.length - 1 ? "\n" : "") // don't add new line to last ingredient
     );
 
-    return mappedIngredients.join("\n");
+    return mappedIngredients.join("");
   }
 
   formatSubmittedSteps(recipeStepsList: Array<string>) {
