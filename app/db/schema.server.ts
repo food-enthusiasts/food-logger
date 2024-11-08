@@ -8,8 +8,10 @@ import {
   text,
   varchar,
   timestamp,
+  unique,
 } from "drizzle-orm/mysql-core";
 
+// TODO: add a column for type to indicate admin user or regular user
 export const users = mysqlTable("users", {
   id: int("id").autoincrement().primaryKey(),
   username: varchar("username", { length: 256 }).notNull().unique(),
@@ -27,19 +29,28 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect; // return type when queried
 export type InsertUser = typeof users.$inferInsert; // insert type
 
-export const recipes = mysqlTable("recipes", {
-  id: int("id").autoincrement().primaryKey(),
-  recipeName: varchar("recipe_name", { length: 256 }).notNull(),
-  userId: int("user_id")
-    .references(() => users.id)
-    .notNull(),
-  // setting ingredient-list and recipe-steps columns as text fields for now and try
-  // to ensure ingredients/steps are separated by new-lines during input validations
-  ingredientList: text("ingredient_list").notNull(),
-  recipeSteps: text("recipe_steps").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
-});
+export const recipes = mysqlTable(
+  "recipes",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    recipeName: varchar("recipe_name", { length: 256 }).notNull(),
+    userId: int("user_id")
+      .references(() => users.id)
+      .notNull(),
+    // setting ingredient-list and recipe-steps columns as text fields for now and try
+    // to ensure ingredients/steps are separated by new-lines during input validations
+    ingredientList: text("ingredient_list").notNull(),
+    recipeSteps: text("recipe_steps").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
+  },
+  (recipesTable) => ({
+    uniq: unique("unique_recipe_name_user_id").on(
+      recipesTable.userId,
+      recipesTable.recipeName
+    ),
+  })
+);
 
 export type Recipe = typeof recipes.$inferSelect;
 export type InsertRecipe = typeof recipes.$inferInsert;

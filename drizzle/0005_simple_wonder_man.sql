@@ -1,0 +1,1 @@
+ALTER TABLE `recipes` ADD CONSTRAINT `unique_recipe_name_user_id` UNIQUE(`user_id`,`recipe_name`);
