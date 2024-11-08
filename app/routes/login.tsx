@@ -99,6 +99,10 @@ export default function Login() {
       {actionData?.errors.unknown ? (
         <Stack>{actionData?.errors.unknown}</Stack>
       ) : null}
+      {/* 
+        unsure what w-full and max-w-sm are doing together when we're at sm screen and up (640px and up)
+        w-full is width: 100% while max-w-sm is max-width: 24rem (384px)
+      */}
       <Stack className="sm:mx-auto sm:w-full sm:max-w-sm py-8 shadow-lg rounded-md">
         <div className="py-6">
           {/* leading-* changes line-height, tracking-* changes letter-spacing */}
