@@ -99,7 +99,25 @@ export default function AddRecipe() {
       <Form method="POST" className="md:max-w-md">
         <Stack>
           <label htmlFor="recipeName">Recipe Name</label>
-          <Input name="recipeName" type="text" id="recipeName"></Input>
+          <Input
+            name="recipeName"
+            type="text"
+            id="recipeName"
+            required
+            onBlur={(event) => {
+              const input = event.target;
+
+              if (input.value.trim().length < 5)
+                input.setCustomValidity(
+                  "Recipe name must be longer than 5 characters"
+                );
+            }}
+            onChange={(event) => {
+              const input = event.target;
+
+              if (input.value.trim().length >= 5) input.setCustomValidity("");
+            }}
+          ></Input>
         </Stack>
         <h1>Ingredients</h1>
         <Stack>
@@ -121,6 +139,7 @@ export default function AddRecipe() {
                     name="ingredients"
                     type="text"
                     id={`ingredients-${ingredientField}`}
+                    required
                   ></Input>
                   {ingredientIdx > 0 ? (
                     <ButtonBase
@@ -154,6 +173,7 @@ export default function AddRecipe() {
                     name="steps"
                     type="text"
                     id={`steps-${stepCountField}`}
+                    required
                   ></Input>
                   {stepCountIdx > 0 ? (
                     <ButtonBase
