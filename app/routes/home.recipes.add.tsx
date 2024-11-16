@@ -98,7 +98,9 @@ export default function AddRecipe() {
       <Link to="/home/recipes">Back to Recipes</Link>
       <Form method="POST" className="md:max-w-md">
         <Stack>
-          <label htmlFor="recipeName">Recipe Name</label>
+          <label htmlFor="recipeName">
+            <Typography variant="subtitle2">Recipe Name</Typography>
+          </label>
           <Input
             name="recipeName"
             type="text"
@@ -119,7 +121,9 @@ export default function AddRecipe() {
             }}
           ></Input>
         </Stack>
-        <h1>Ingredients</h1>
+        <Typography variant="paragraph" className="font-light">
+          Ingredients
+        </Typography>
         <Stack>
           {/* ingredients container div */}
           <div>
@@ -156,7 +160,7 @@ export default function AddRecipe() {
           </div>
           <Button onClick={addIngredientField}>Add Another Ingredient</Button>
         </Stack>
-        <h1>Steps</h1>
+        <Typography variant="paragraph">Steps</Typography>
         <Stack>
           {/* steps container div */}
           <div>
