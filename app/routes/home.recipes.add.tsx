@@ -99,7 +99,7 @@ export default function AddRecipe() {
       <Form method="POST" className="md:max-w-md">
         <Stack>
           <label htmlFor="recipeName">
-            <Typography variant="subtitle2">Recipe Name</Typography>
+            <Typography variant="paragraph">Recipe Name</Typography>
           </label>
           <Input
             name="recipeName"
@@ -121,9 +121,7 @@ export default function AddRecipe() {
             }}
           ></Input>
         </Stack>
-        <Typography variant="paragraph" className="font-light">
-          Ingredients
-        </Typography>
+        <Typography variant="paragraph">Ingredients</Typography>
         <Stack>
           {/* ingredients container div */}
           <div>
