@@ -1,23 +1,12 @@
 // kind of just copying from material ui typography source without really understanding intention behind it
 // https://github.com/mui/material-ui/blob/v6.1.6/packages/mui-material/src/Typography/Typography.js
-
 class InvalidTypographyError extends Error {}
 
 interface TypographyProps {
   children: React.ReactNode;
   className?: string;
   component?: // the underlying html element
-  | "p"
-    | "h1"
-    | "h2"
-    | "h3"
-    | "h4"
-    | "h5"
-    | "h6"
-    | "subtitle1"
-    | "subtitle2"
-    | "body1"
-    | "body2";
+  "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "p";
   variant?: // the "style" of the element indpendent of the actual html
   | "paragraph"
     | "h1"
@@ -33,7 +22,7 @@ interface TypographyProps {
     | "button";
 }
 
-// using material design typographic scale font sizes here
+// using material design typographic scale font sizes here https://m2.material.io/design/typography/the-type-system.html#type-scale
 // honestly don't understand font design very much so I'm just copying values and
 // translating them to tailwind classes. In cases where tailwind doesn't provide an
 // exact value to match the material design value, I'll use the closes tw class and note it down
@@ -60,41 +49,109 @@ const defaultVariantMappingStyles = {
 export function Typography({
   children,
   className,
-  component,
-  variant,
+  component = "p",
+  variant = "paragraph",
 }: TypographyProps) {
-  // if component prop is not passed in (aka is undefined) default to "p"
-  component = component ?? "p";
-  // try to match variant to component unless compoent is p, in which case map p component
-  // to paragraph variant. If no variant passed in, default to paragraph
-  variant = component === "p" ? "paragraph" : component;
-  console.log(`the component ${component}, and the variant ${variant}`);
-
   // choose default styles based on the variant chosen
   const defaultStyles = defaultVariantMappingStyles[variant];
+
   switch (component) {
     case "p":
-      return <p className={className ?? defaultStyles}>{children}</p>;
-    case "body1":
-      return <p className={className ?? defaultStyles}>{children}</p>;
-    case "body2":
-      return <p className={className ?? defaultStyles}>{children}</p>;
+      return (
+        <p
+          className={
+            className !== undefined
+              ? `${defaultStyles} ${className.trim()}`
+              : defaultStyles
+          }
+        >
+          {children}
+        </p>
+      );
+    case "span":
+      return (
+        <span
+          className={
+            className !== undefined
+              ? `${defaultStyles} ${className.trim()}`
+              : defaultStyles
+          }
+        >
+          {children}
+        </span>
+      );
     case "h1":
-      return <h1 className={className ?? defaultStyles}>{children}</h1>;
+      return (
+        <h1
+          className={
+            className !== undefined
+              ? `${defaultStyles} ${className.trim()}`
+              : defaultStyles
+          }
+        >
+          {children}
+        </h1>
+      );
     case "h2":
-      return <h2 className={className ?? defaultStyles}>{children}</h2>;
+      return (
+        <h2
+          className={
+            className !== undefined
+              ? `${defaultStyles} ${className.trim()}`
+              : defaultStyles
+          }
+        >
+          {children}
+        </h2>
+      );
     case "h3":
-      return <h3 className={className ?? defaultStyles}>{children}</h3>;
+      return (
+        <h3
+          className={
+            className !== undefined
+              ? `${defaultStyles} ${className.trim()}`
+              : defaultStyles
+          }
+        >
+          {children}
+        </h3>
+      );
     case "h4":
-      return <h4 className={className ?? defaultStyles}>{children}</h4>;
+      return (
+        <h4
+          className={
+            className !== undefined
+              ? `${defaultStyles} ${className.trim()}`
+              : defaultStyles
+          }
+        >
+          {children}
+        </h4>
+      );
     case "h5":
-      return <h5 className={className ?? defaultStyles}>{children}</h5>;
+      return (
+        <h5
+          className={
+            className !== undefined
+              ? `${defaultStyles} ${className.trim()}`
+              : defaultStyles
+          }
+        >
+          {children}
+        </h5>
+      );
     case "h6":
-      return <h6 className={className ?? defaultStyles}>{children}</h6>;
-    case "subtitle1":
-      return <h6 className={className ?? defaultStyles}>{children}</h6>;
-    case "subtitle2":
-      return <h6 className={className ?? defaultStyles}>{children}</h6>;
+      return (
+        <h6
+          className={
+            className !== undefined
+              ? `${defaultStyles} ${className.trim()}`
+              : defaultStyles
+          }
+        >
+          {children}
+        </h6>
+      );
     default:
       throw new InvalidTypographyError(
         `invalid typography component passed: ${component}`
