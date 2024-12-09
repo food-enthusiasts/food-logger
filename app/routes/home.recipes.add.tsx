@@ -14,7 +14,8 @@ import { Input } from "~/components/Input";
 import { Button } from "~/components/Button";
 import { ButtonBase } from "~/components/ButtonBase";
 import { Row } from "~/components/Row";
-import { Stack } from "~/components/Stack";
+import { Stack, StackedInputs } from "~/components/Stack";
+import { Typography } from "~/components/Typography";
 
 export async function action({ request }: ActionFunctionArgs) {
   const newRecipeSchema = z
@@ -94,7 +95,7 @@ export default function AddRecipe() {
   // 3. add another ingredient, ingredientsCountList = [1, 3, 4, 5]
 
   return (
-    <Stack>
+    <Stack className="w-full md:max-w-lg bg-slate-400 px-4 py-4">
       <Link to="/home/recipes">Back to Recipes</Link>
       <Form method="POST" className="md:max-w-md">
         <Stack>
@@ -122,76 +123,79 @@ export default function AddRecipe() {
           ></Input>
         </Stack>
         <Typography variant="paragraph">Ingredients</Typography>
-        <Stack>
-          {/* ingredients container div */}
-          <div>
-            {ingredientsCountList.map((ingredientField, ingredientIdx) => {
-              return (
-                <Row
-                  key={`ingredient-${ingredientField}`}
-                  className="justify-between"
+        <StackedInputs>
+          {ingredientsCountList.map((ingredientField, ingredientIdx) => {
+            return (
+              <Row
+                key={`ingredient-${ingredientField}`}
+                className="justify-between"
+              >
+                <label
+                  htmlFor={`ingredients-${ingredientField}`}
+                  className="sr-only"
                 >
-                  <label
-                    htmlFor={`ingredients-${ingredientField}`}
-                    className="sr-only"
+                  {`ingredient ${ingredientIdx + 1}`}
+                </label>
+                <Input
+                  name="ingredients"
+                  type="text"
+                  id={`ingredients-${ingredientField}`}
+                  className="flex-1"
+                  required
+                ></Input>
+                {ingredientIdx > 0 ? (
+                  <ButtonBase
+                    className="px-4"
+                    onClick={() => deleteIngredientField(ingredientField)}
                   >
-                    {`ingredient ${ingredientIdx + 1}`}
-                  </label>
-                  <Input
-                    name="ingredients"
-                    type="text"
-                    id={`ingredients-${ingredientField}`}
-                    required
-                  ></Input>
-                  {ingredientIdx > 0 ? (
-                    <ButtonBase
-                      className="px-4"
-                      onClick={() => deleteIngredientField(ingredientField)}
-                    >
-                      X
-                    </ButtonBase>
-                  ) : null}
-                </Row>
-              );
-            })}
-            {/* ingredients container div */}
-          </div>
-          <Button onClick={addIngredientField}>Add Another Ingredient</Button>
-        </Stack>
+                    X
+                  </ButtonBase>
+                ) : (
+                  <div aria-hidden className="px-4 invisible">
+                    X
+                  </div>
+                )}
+              </Row>
+            );
+          })}
+          <Button className="sm:w-1/2" onClick={addIngredientField}>
+            Add Ingredient
+          </Button>
+        </StackedInputs>
         <Typography variant="paragraph">Steps</Typography>
-        <Stack>
-          {/* steps container div */}
-          <div>
-            {stepsCountList.map((stepCountField, stepCountIdx) => {
-              return (
-                <Row key={`step-${stepCountField}`} className="justify-between">
-                  <label
-                    htmlFor={`steps-${stepCountField}`}
-                    className="sr-only"
+        <StackedInputs>
+          {stepsCountList.map((stepCountField, stepCountIdx) => {
+            return (
+              <Row key={`step-${stepCountField}`} className="justify-between">
+                <label htmlFor={`steps-${stepCountField}`} className="sr-only">
+                  {`step ${stepCountIdx + 1}`}
+                </label>
+                <Input
+                  name="steps"
+                  type="text"
+                  id={`steps-${stepCountField}`}
+                  className="flex-1"
+                  required
+                ></Input>
+                {stepCountIdx > 0 ? (
+                  <ButtonBase
+                    className="px-4"
+                    onClick={() => deleteStepField(stepCountField)}
                   >
-                    {`step ${stepCountIdx + 1}`}
-                  </label>
-                  <Input
-                    name="steps"
-                    type="text"
-                    id={`steps-${stepCountField}`}
-                    required
-                  ></Input>
-                  {stepCountIdx > 0 ? (
-                    <ButtonBase
-                      className="px-4"
-                      onClick={() => deleteStepField(stepCountField)}
-                    >
-                      X
-                    </ButtonBase>
-                  ) : null}
-                </Row>
-              );
-            })}
-            {/* steps container div */}
-          </div>
-          <Button onClick={addStepField}>Add Another Step</Button>
-        </Stack>
+                    X
+                  </ButtonBase>
+                ) : (
+                  <div aria-hidden className="px-4 invisible">
+                    X
+                  </div>
+                )}
+              </Row>
+            );
+          })}
+          <Button className="sm:w-1/2" onClick={addStepField}>
+            Add Step
+          </Button>
+        </StackedInputs>
         <Stack className="pt-4">
           <Button className="bg-primary-300" type="submit">
             Submit
