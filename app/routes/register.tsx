@@ -7,9 +7,11 @@ import { z } from "zod";
 
 import { createUserSession, getUserIdFromSession } from "~/session.server";
 
-import { Stack } from "~/components/Stack";
+import { Stack, StackedInputs } from "~/components/Stack";
 import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
+import { Typography } from "~/components/Typography";
+import { Box } from "~/components/Box";
 
 import {
   UserService,
@@ -166,47 +168,49 @@ export default function RegisterPage() {
         w-full is width: 100% while max-w-sm is max-width: 24rem (384px)
       */}
       <Stack className="sm:mx-auto sm:w-full sm:max-w-sm py-8 shadow-lg rounded-md">
-        <div className="py-6">
+        <Stack className="py-6">
           {/* leading-* changes line-height, tracking-* changes letter-spacing */}
-          <h2 className="text-center text-2xl leading-9 tracking-tight">
-            Sign up for an account
-          </h2>
-        </div>
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm px-4 py-6">
-          <Form
-            action="/register"
-            method="post"
-            className="flex flex-col gap-4"
+          <Typography
+            className="text-center leading-9 tracking-tight"
+            variant="h5"
+            component="h2"
           >
-            <Stack>
-              <label htmlFor="username">Username</label>
-              <Input name="username" type="text" id="username"></Input>
-            </Stack>
-            <Stack>
-              <label htmlFor="email">Email</label>
-              <Input
-                name="email"
-                type="email"
-                id="email"
-                autoComplete="email"
-              ></Input>
-            </Stack>
-            <Stack>
-              <label htmlFor="password">Password</label>
-              <Input name="password" type="password" id="password"></Input>
-            </Stack>
-            {/* 
+            Sign up for an account
+          </Typography>
+        </Stack>
+        <Box className="sm:mx-auto sm:w-full sm:max-w-sm px-4 py-6">
+          <Form action="/register" method="post">
+            <StackedInputs>
+              <Stack>
+                <label htmlFor="username">Username</label>
+                <Input name="username" type="text" id="username"></Input>
+              </Stack>
+              <Stack>
+                <label htmlFor="email">Email</label>
+                <Input
+                  name="email"
+                  type="email"
+                  id="email"
+                  autoComplete="email"
+                ></Input>
+              </Stack>
+              <Stack>
+                <label htmlFor="password">Password</label>
+                <Input name="password" type="password" id="password"></Input>
+              </Stack>
+              {/* 
             because a flex col defaults to align-items: stretch, just placing the
             Button in a Stack will make the Button stretch to take up the full width
             - alternatively, could give the button 100% width through className w-full
           */}
-            <Stack className="pt-4">
-              <Button className="bg-primary-300" type="submit">
-                Submit
-              </Button>
-            </Stack>
+              <Stack className="pt-4">
+                <Button className="bg-primary-300" type="submit">
+                  Submit
+                </Button>
+              </Stack>
+            </StackedInputs>
           </Form>
-        </div>
+        </Box>
       </Stack>
     </>
   );

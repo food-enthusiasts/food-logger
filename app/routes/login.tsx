@@ -9,6 +9,7 @@ import { getUserIdFromSession, createUserSession } from "~/session.server";
 import { UserService } from "~/services/user.server";
 
 import { Button } from "~/components/Button";
+import { Box } from "~/components/Box";
 import { Stack, StackedInputs } from "~/components/Stack";
 import { Input } from "~/components/Input";
 import { Typography } from "~/components/Typography";
@@ -115,7 +116,7 @@ export default function Login() {
             Sign into your account
           </Typography>
         </Stack>
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm px-4 py-6">
+        <Box className="sm:mx-auto sm:w-full sm:max-w-sm px-4 py-6">
           <Form action="/login" method="post">
             <StackedInputs>
               <Stack>
@@ -142,7 +143,7 @@ export default function Login() {
               </Stack>
             </StackedInputs>
           </Form>
-        </div>
+        </Box>
       </Stack>
     </>
   );
