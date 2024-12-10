@@ -95,111 +95,127 @@ export default function AddRecipe() {
   // 3. add another ingredient, ingredientsCountList = [1, 3, 4, 5]
 
   return (
-    <Stack className="w-full md:max-w-lg bg-slate-400 px-4 py-4">
+    <Stack className="w-full md:max-w-screen-sm px-4 py-8 shadow-lg rounded-md">
       <Link to="/home/recipes">Back to Recipes</Link>
-      <Form method="POST" className="md:max-w-md">
-        <Stack>
-          <label htmlFor="recipeName">
-            <Typography variant="paragraph">Recipe Name</Typography>
-          </label>
-          <Input
-            name="recipeName"
-            type="text"
-            id="recipeName"
-            required
-            onBlur={(event) => {
-              const input = event.target;
+      <Form method="POST" className="sm:px-4">
+        <Stack className="gap-y-6">
+          <Stack>
+            <label htmlFor="recipeName">
+              <Typography variant="paragraph">Recipe Name</Typography>
+            </label>
+            <Input
+              name="recipeName"
+              type="text"
+              id="recipeName"
+              required
+              onBlur={(event) => {
+                const input = event.target;
 
-              if (input.value.trim().length < 5)
-                input.setCustomValidity(
-                  "Recipe name must be longer than 5 characters"
+                if (input.value.trim().length < 5)
+                  input.setCustomValidity(
+                    "Recipe name must be longer than 5 characters"
+                  );
+              }}
+              onChange={(event) => {
+                const input = event.target;
+
+                if (input.value.trim().length >= 5) input.setCustomValidity("");
+              }}
+            ></Input>
+          </Stack>
+          <Stack>
+            <Stack>
+              <Typography variant="paragraph">Ingredients</Typography>
+            </Stack>
+            <StackedInputs>
+              {ingredientsCountList.map((ingredientField, ingredientIdx) => {
+                return (
+                  <Row
+                    key={`ingredient-${ingredientField}`}
+                    className="justify-between"
+                  >
+                    <label
+                      htmlFor={`ingredients-${ingredientField}`}
+                      className="sr-only"
+                    >
+                      {`ingredient ${ingredientIdx + 1}`}
+                    </label>
+                    <Input
+                      name="ingredients"
+                      type="text"
+                      id={`ingredients-${ingredientField}`}
+                      className="flex-1"
+                      required
+                    ></Input>
+                    {ingredientIdx > 0 ? (
+                      <ButtonBase
+                        className="px-4"
+                        onClick={() => deleteIngredientField(ingredientField)}
+                      >
+                        X
+                      </ButtonBase>
+                    ) : (
+                      <div aria-hidden className="px-4 invisible">
+                        X
+                      </div>
+                    )}
+                  </Row>
                 );
-            }}
-            onChange={(event) => {
-              const input = event.target;
-
-              if (input.value.trim().length >= 5) input.setCustomValidity("");
-            }}
-          ></Input>
-        </Stack>
-        <Typography variant="paragraph">Ingredients</Typography>
-        <StackedInputs>
-          {ingredientsCountList.map((ingredientField, ingredientIdx) => {
-            return (
-              <Row
-                key={`ingredient-${ingredientField}`}
-                className="justify-between"
-              >
-                <label
-                  htmlFor={`ingredients-${ingredientField}`}
-                  className="sr-only"
-                >
-                  {`ingredient ${ingredientIdx + 1}`}
-                </label>
-                <Input
-                  name="ingredients"
-                  type="text"
-                  id={`ingredients-${ingredientField}`}
-                  className="flex-1"
-                  required
-                ></Input>
-                {ingredientIdx > 0 ? (
-                  <ButtonBase
-                    className="px-4"
-                    onClick={() => deleteIngredientField(ingredientField)}
+              })}
+              <Button className="sm:w-1/2" onClick={addIngredientField}>
+                Add Ingredient
+              </Button>
+            </StackedInputs>
+          </Stack>
+          <Stack>
+            <Stack>
+              <Typography variant="paragraph">Steps</Typography>
+            </Stack>
+            <StackedInputs>
+              {stepsCountList.map((stepCountField, stepCountIdx) => {
+                return (
+                  <Row
+                    key={`step-${stepCountField}`}
+                    className="justify-between"
                   >
-                    X
-                  </ButtonBase>
-                ) : (
-                  <div aria-hidden className="px-4 invisible">
-                    X
-                  </div>
-                )}
-              </Row>
-            );
-          })}
-          <Button className="sm:w-1/2" onClick={addIngredientField}>
-            Add Ingredient
-          </Button>
-        </StackedInputs>
-        <Typography variant="paragraph">Steps</Typography>
-        <StackedInputs>
-          {stepsCountList.map((stepCountField, stepCountIdx) => {
-            return (
-              <Row key={`step-${stepCountField}`} className="justify-between">
-                <label htmlFor={`steps-${stepCountField}`} className="sr-only">
-                  {`step ${stepCountIdx + 1}`}
-                </label>
-                <Input
-                  name="steps"
-                  type="text"
-                  id={`steps-${stepCountField}`}
-                  className="flex-1"
-                  required
-                ></Input>
-                {stepCountIdx > 0 ? (
-                  <ButtonBase
-                    className="px-4"
-                    onClick={() => deleteStepField(stepCountField)}
-                  >
-                    X
-                  </ButtonBase>
-                ) : (
-                  <div aria-hidden className="px-4 invisible">
-                    X
-                  </div>
-                )}
-              </Row>
-            );
-          })}
-          <Button className="sm:w-1/2" onClick={addStepField}>
-            Add Step
-          </Button>
-        </StackedInputs>
-        <Stack className="pt-4">
-          <Button className="bg-primary-300" type="submit">
-            Submit
-          </Button>
+                    <label
+                      htmlFor={`steps-${stepCountField}`}
+                      className="sr-only"
+                    >
+                      {`step ${stepCountIdx + 1}`}
+                    </label>
+                    <Input
+                      name="steps"
+                      type="text"
+                      id={`steps-${stepCountField}`}
+                      className="flex-1"
+                      required
+                    ></Input>
+                    {stepCountIdx > 0 ? (
+                      <ButtonBase
+                        className="px-4"
+                        onClick={() => deleteStepField(stepCountField)}
+                      >
+                        X
+                      </ButtonBase>
+                    ) : (
+                      <div aria-hidden className="px-4 invisible">
+                        X
+                      </div>
+                    )}
+                  </Row>
+                );
+              })}
+              <Button className="sm:w-1/2" onClick={addStepField}>
+                Add Step
+              </Button>
+            </StackedInputs>
+          </Stack>
+          <Stack className="pt-4">
+            <Button className="bg-primary-300" type="submit">
+              Submit
+            </Button>
+          </Stack>
         </Stack>
       </Form>
     </Stack>
