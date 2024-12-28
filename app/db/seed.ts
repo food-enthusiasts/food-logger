@@ -1,8 +1,8 @@
 import "dotenv/config";
-import { db } from "./index.server";
+import { db, connection } from "./index.server";
 import { sql } from "drizzle-orm";
 
-import { users, recipes, meals, dishes } from "./schema.server";
+import { recipes, meals, dishes } from "./schema.server";
 import { UserRepository } from "../repositories/user.server";
 
 // 12/20/2024 - got below error when trying to run my seed npm script - maybe env vars aren't being loaded properly? need to explicitly call dotenv?
@@ -38,14 +38,23 @@ async function seed() {
   await db.execute(sql`SET FOREIGN_KEY_CHECKS = 0;`);
 
   // truncate all tables - users, recipes, meals, dishes
+  try {
+    await db.transaction(async (transaction) => {
+      await Promise.all([
+        transaction.execute(sql`TRUNCATE TABLE USERS`),
+        transaction.execute(sql`TRUNCATE RECIPES`),
+        transaction.execute(sql`TRUNCATE MEALS`),
+        transaction.execute(sql`TRUNCATE DISHES`),
+      ]);
+    });
+  } catch (e) {
+    console.log("error while truncating tables");
+    console.error(e);
+    return;
+  }
 
   console.log("re-enabling foreign key constraints");
   await db.execute(sql`SET FOREIGN_KEY_CHECKS = 1;`);
-
-  // const asd = db
-  //   .select()
-  //   .from(users)
-  //   .then((data) => console.log(data));
 
   const userRepo = new UserRepository();
   console.log("creating users");
@@ -54,17 +63,17 @@ async function seed() {
   const seedUserIds = await userRepo.bulkCreateUsers([
     {
       username: "garfield",
-      email: "garfield@example.com",
+      email: "garf@example.com",
       password: "asd123456",
     },
     {
       username: "john_arbuckle",
-      email: "john_arbuckle@example.com",
+      email: "john@example.com",
       password: "asd123456",
     },
     {
       username: "odie",
-      email: "odiee@example.com",
+      email: "odie@example.com",
       password: "asd123456",
     },
   ]);
@@ -152,6 +161,7 @@ async function seed() {
   ]);
 
   console.log("finished seeding database");
+  await connection.end();
 }
 
 seed();
