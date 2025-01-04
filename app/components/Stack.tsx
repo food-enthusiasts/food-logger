@@ -15,5 +15,7 @@ export function Stack({ children, className }: StackProps) {
 // for example, I intend to use StackedInputs to contain Inputs used in forms, and would like to maintain consistent
 // styles such as gap throughout any forms I create
 export function StackedInputs({ children, className }: StackProps) {
-  return <Stack className={`gap-y-4 ${className ?? ""}`}>{children}</Stack>;
+  const componentClassname = `gap-y-4 ${className ?? ""}`.trim();
+
+  return <Stack className={componentClassname}>{children}</Stack>;
 }

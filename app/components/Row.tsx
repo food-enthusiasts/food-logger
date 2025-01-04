@@ -6,5 +6,7 @@ interface RowProps {
 }
 
 export function Row({ children, className }: RowProps) {
-  return <div className={`flex ${className ?? ""}`}>{children}</div>;
+  const componentClassname = `flex ${className ?? ""}`.trim();
+
+  return <div className={componentClassname}>{children}</div>;
 }
