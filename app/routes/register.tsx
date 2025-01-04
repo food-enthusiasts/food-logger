@@ -204,7 +204,7 @@ export default function RegisterPage() {
             - alternatively, could give the button 100% width through className w-full
           */}
               <Stack className="pt-4">
-                <Button className="bg-primary-300" type="submit">
+                <Button className="bg-buttonPrimary" type="submit">
                   Submit
                 </Button>
               </Stack>

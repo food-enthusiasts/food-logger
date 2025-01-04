@@ -137,7 +137,7 @@ export default function Login() {
             Button in a Stack will make the Button stretch to take up the full width
           */}
               <Stack className="pt-4">
-                <Button className="bg-primary-300" type="submit">
+                <Button className="bg-buttonPrimary" type="submit">
                   Submit
                 </Button>
               </Stack>

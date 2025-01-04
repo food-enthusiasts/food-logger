@@ -212,7 +212,7 @@ export default function AddRecipe() {
             </StackedInputs>
           </Stack>
           <Stack className="pt-4">
-            <Button className="bg-primary-300" type="submit">
+            <Button className="bg-buttonPrimary" type="submit">
               Submit
             </Button>
           </Stack>

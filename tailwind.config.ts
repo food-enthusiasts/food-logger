@@ -11,6 +11,7 @@ export default {
         warn: colors.indigo,
         error: colors.red,
         buttonPrimary: colors.orange[300],
+        destructive: colors.red[500],
         // buttonSecondary: colors.yellow[400],
       },
     },
