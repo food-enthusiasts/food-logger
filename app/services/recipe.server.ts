@@ -34,17 +34,17 @@ export class RecipeService {
   addNewRecipe({
     userId,
     recipeName,
-    ingredientsList,
+    ingredientList,
     recipeSteps,
   }: {
     userId: number;
     recipeName: string;
-    ingredientsList: Array<string>;
+    ingredientList: Array<string>;
     recipeSteps: Array<string>;
   }) {
     try {
       const formattedIngredients =
-        this.formatSubmittedIngredients(ingredientsList);
+        this.formatSubmittedIngredients(ingredientList);
       const formattedSteps = this.formatSubmittedSteps(recipeSteps);
 
       const createdRecipeId = this.repo.createRecipe({
@@ -63,15 +63,15 @@ export class RecipeService {
 
   // note on errors: in case an individual ingredient is not formatted correctly, I prefer to throw an error instead
   // of trying to guess at what the user's intention was, and bubble that error up to the front end
-  formatSubmittedIngredients(ingredientsList: Array<string>) {
+  formatSubmittedIngredients(ingredientList: Array<string>) {
     // want to transform an array of strings into a string where each array element is separated by a new line
     // safe to assume we're getting well formatted input here? Probably, but can't hurt to do it again
     // one thing to look out for is empty or white space only strings
 
-    const mappedIngredients = ingredientsList.map(
+    const mappedIngredients = ingredientList.map(
       (ingredient, idx) =>
         this.validateIngredientString(ingredient) +
-        (idx < ingredientsList.length - 1 ? "\n" : "") // don't add new line to last ingredient
+        (idx < ingredientList.length - 1 ? "\n" : "") // don't add new line to last ingredient
     );
 
     return mappedIngredients.join("");

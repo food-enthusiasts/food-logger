@@ -22,7 +22,7 @@ export async function action({ request }: ActionFunctionArgs) {
     .object({
       userId: z.number(),
       recipeName: z.string().min(1),
-      ingredientsList: z.array(z.string().min(1)).nonempty(),
+      ingredientList: z.array(z.string().min(1)).nonempty(),
       recipeSteps: z.array(z.string().min(1)).nonempty(),
     })
     .strict();
@@ -32,14 +32,14 @@ export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
 
   const recipeName = formData.get("recipeName");
-  const ingredientsList = formData.getAll("ingredients");
+  const ingredientList = formData.getAll("ingredients");
   const stepsList = formData.getAll("steps");
 
   // probably do zod parsing here - can throw
   const parsedRecipe = newRecipeSchema.parse({
     userId,
     recipeName,
-    ingredientsList,
+    ingredientList,
     recipeSteps: stepsList,
   });
 
