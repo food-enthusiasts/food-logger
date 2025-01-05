@@ -31,6 +31,31 @@ export class RecipeService {
     }
   }
 
+  async findRecipeById(recipeId: number) {
+    try {
+      const maybeRecipe = await this.repo.findRecipeById(recipeId);
+
+      // returning null if we don't find a recipe instead of just throwing an error. It's expected that the query might
+      // not return a recipe. However, encountering an error while the query is happening would be unexpected and we would
+      // want to catch that error and handle it somewhere (not here, maybe in a route handler/remix loader)
+      if (!maybeRecipe) return null;
+
+      const parsedRecipe = {
+        ...maybeRecipe,
+        ingredientList: this.convertIngredientsStringToList(
+          maybeRecipe.ingredientList
+        ),
+        recipeSteps: this.convertStepsStringToList(maybeRecipe.recipeSteps),
+      };
+
+      return parsedRecipe;
+    } catch (err) {
+      console.error("Error in recipe service: findRecipeById", err);
+
+      throw err;
+    }
+  }
+
   addNewRecipe({
     userId,
     recipeName,
