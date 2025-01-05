@@ -22,7 +22,7 @@ export async function action({ request }: ActionFunctionArgs) {
     .object({
       userId: z.number(),
       recipeName: z.string().min(1),
-      ingredientsList: z.array(z.string().min(1)),
+      ingredientsList: z.array(z.string().min(1)).nonempty(),
       recipeSteps: z.array(z.string().min(1)).nonempty(),
     })
     .strict();
