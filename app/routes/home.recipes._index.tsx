@@ -7,8 +7,10 @@ import { RecipeService } from "~/services/recipe.server";
 import { useLoaderData, Link } from "@remix-run/react";
 
 import { Stack } from "~/components/Stack";
+import { Typography } from "~/components/Typography";
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  console.log("loading in home.recipes._index");
   try {
     const userId = await getUserIdFromSession(request);
 
@@ -42,26 +44,14 @@ export default function RecipesIndex() {
     <Stack>
       <Link to="./add">Add a Recipe</Link>
       {fetchedRecipes.length > 0 ? (
-        <ul className="flex flex-col gap-4">
+        <ul className="flex flex-col gap-4 items-center">
           {fetchedRecipes.map((recipe) => {
             return (
-              <li key={recipe.id} className="bg-amber-600">
-                <Stack>
-                  <p>Title: {recipe.recipeName}</p>
-                  <p>Ingredients</p>
-                  <ol>
-                    {recipe.ingredientList.map((ingredient) => {
-                      return <li key={ingredient}>{ingredient}</li>;
-                    })}
-                  </ol>
-                  <p>Steps</p>
-                  <ol>
-                    {recipe.recipeSteps.map((step) => {
-                      return <li key={step}>{step}</li>;
-                    })}
-                  </ol>
-                </Stack>
-              </li>
+              <RecipeCard
+                key={recipe.id}
+                title={recipe.recipeName}
+                recipeId={recipe.id}
+              />
             );
           })}
         </ul>
@@ -69,6 +59,42 @@ export default function RecipesIndex() {
         <div>No recipes added yet</div>
       )}
     </Stack>
+  );
+}
+
+interface CardProps {
+  title: string;
+  recipeId: number;
+}
+
+// referencing tailwind card from here for styles: https://v1.tailwindcss.com/components/cards
+// 12/27/2024 - also referencing css tricks article about making an accessible clickable card (4th method):
+// https://css-tricks.com/block-links-the-search-for-a-perfect-solution/#method-4-sprinkle-javascript-on-the-second-method
+// upon actually reading the css tricks article, it does some imperative dom stuff that doesn't really seem to fit in with react
+// so I'm just going to render a clickable link to view the recipe. The whole card is not clickable, but that seems ok for now
+function RecipeCard({ title, recipeId }: CardProps) {
+  // ideally want to display images for a recipe, probably won't require an image upload for every recipe so would be good
+  // to have an optimized placeholder
+  // ideally, would save uploaded recipe images to object storage like s3 and have an image optimization service that
+  // would take a user image and generate multiple optimized versions for serving at different screen sizes
+  return (
+    <article className="max-w-sm rounded overflow-hidden shadow-lg">
+      <Stack className="px-6 py-4">
+        {/* replace title p tag with typography component? */}
+        <p className="font-bold text-xl">
+          <Link to={`./${recipeId}`}>{title}</Link>
+        </p>
+        {/* 
+          descriptive text goes here? not sure what I would add. Currently for a recipe, does not take a description just
+          ingredients and steps as text content. AllRecipes doesn't display a description, does have large title text for name though
+        */}
+        <p className="text-gray-700 text-base">This is some cooked food!</p>
+        <p>Cooked 999 times!</p>
+        <Link to={`./${recipeId}`}>
+          <Typography>View Recipe</Typography>
+        </Link>
+      </Stack>
+    </article>
   );
 }
 
