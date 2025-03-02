@@ -1,0 +1,65 @@
+# taken partially from https://fly.io/javascript-journal/building-remix-app-locally-with-docker/ as starting point
+# note these docs on the "version" field - https://docs.docker.com/reference/compose-file/version-and-name/
+# specifying version doesn't actually functionally do anything from what I can tell
+# version: "3.8"
+services:
+  web:
+    build:
+      context: .
+    # command: npm run dev # is this line necessary? I already have CMD ["npm", "run", "dev"] in the Dockerfile definition
+    # taking this depends_on block from https://docs.docker.com/compose/how-tos/startup-order/#example
+    # want to ensure db service is up and running before running this web container
+    depends_on:
+      db:
+        condition: service_healthy
+        # restart: true # not compatible with compose version 3.8?
+    environment:
+      - NODE_ENV=development # might not be necessary but at least it's explicit
+    ports:
+      - "5173:5173"
+    volumes:
+      # called the working directory in the Dockerfile "/my_app"
+      - ${APP_DIR}:/my_app # this is a bind mount, not a docker volume meant to copy over source files to running app?
+      - /my_app/node_modules # this is an anonymous volume, prevents us from adding node_modules on host machine
+      # to node_modules in docker container. Instead, I believe the node_modules that get built as part of image creation
+      # are used in docker container. Still not entirely sure how it works though
+      # could this alternatively be implemented by adding /node_modules to a .dockerignore file?
+  db:
+    image: mysql
+    # restart: always # what is this actually saying?
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PW}
+      - MYSQL_DATABASE=${MYSQL_DB_NAME}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - db_volume:/var/lib/mysql
+      # copying in a sql dump file to init the mysql container with my db data from before I containerized the project
+      # note that these files will only run when the db container is started for the first time. 
+      - ./db_init/:/docker-entrypoint-initdb.d
+    # healthcheck lines taken from https://www.reddit.com/r/docker/comments/1g8k460/comment/lsz5ri2/
+    # using ping utility from mysqladmin for the test command
+    # healtcheck docs for Dockerfile: https://docs.docker.com/reference/dockerfile/#healthcheck
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin --user=$${MYSQL_USER} --password=$${MYSQL_PASSWORD} --host=localhost ping" ]
+      # start_period - period of time that we give the container to boot up before taking healthchecks into consideration?
+      # i guess checks still occur during this period, but failed ones don't count towards failure, and a successful check during
+      # this period, the container is considered started and all consecutive failures will count towards retry limit
+      start_period: 60s
+      # start_interval - the interval at which the healthcheck test runs during the start_period
+      start_interval: 15s
+      # interval - healthcheck first runs $interval time after container is started, and $interval time after each previous check completes 
+      interval: 30s
+      # timeout - if the healthcheck test takes more than $timeout time to complete, it is considered a failed check
+      timeout: 5s
+      # retries - takes $retries number of consecutive healthcheck failures for the container to be considered unhealthy 
+      retries: 3
+volumes:
+  db_volume:
+    # networks: by default, docker compose creates a network for services to communicate by so hopefully I don't
+    # need to define one here? https://docs.docker.com/compose/how-tos/networking/
+    # I can reference services by name, such as "web" or "db". Within the "web" container, it can reference "db" in things
+    # such as db connection strings that evaluates to the ip address used internally for the "db" service (or something like that)
+
+
+
